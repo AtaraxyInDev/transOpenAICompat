@@ -1,0 +1,17 @@
+{
+  "name": "transOpenAICompat",
+  "title": "OpenAI-Compatible Translator",
+  "description": "Translator++ addon for LM Studio and OpenAI-compatible chat APIs with glossary, short-term context, placeholder protection, and JRPG/VN-oriented translation prompts.",
+  "main": "OpenAICompatTranslator.js",
+  "homepage": "http://dreamsavior.net",
+  "version": "0.3.0",
+  "author": {
+    "name": "Codex",
+    "email": "noreply@example.com"
+  },
+  "autoload": false,
+  "load": [
+    "OpenAICompatTranslator.js"
+  ],
+  "minimumVersion": "6.4.24"
+}

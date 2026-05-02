@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<script>
+    var $ = require('jquery');
+    window.jQuery = $;
+</script>
+<script type="text/javascript" src="/www/modules/jquery/jquery.json.min.js"></script>
+<script type="text/javascript" src="/www/modules/jquery-ui/jquery-ui-1.11.4.custom/jquery-ui.js"></script>
+<script type="text/javascript" src="/www/modules/json2.js"></script>
+<script type="text/javascript" src="/www/js/consts.js"></script>
+<script type="text/javascript" src="/www/js/common.js"></script>
+<script type="text/javascript" src="/www/js/loadingScreen.js"></script>
+<link type="text/css" href="/www/modules/jquery-ui/jquery-ui-1.11.4.custom/jquery-ui.css" rel="stylesheet" />
+<link type="text/css" href="/www/css/trans.css" rel="stylesheet" media="screen">
+<link type="text/css" href="/www/css/fontello-embedded.css" rel="stylesheet" media="screen">
+<link type="text/css" href="openaiCompatTester.css" rel="stylesheet" media="screen">
+<script type="text/javascript" src="openaiCompatTester.js"></script>
+<title>OpenAI-Compatible Tester - Translator++</title>
+</head>
+<body class="editor">
+    <div class="body tester-root">
+        <div class="toolbar">
+            <div class="toolbar-content toolbar1">
+                <button class="menu-button button-translate"><i class="icon-play green"></i><span>Translate sample</span></button>
+                <button class="menu-button button-test"><i class="icon-plug"></i><span>Test connection</span></button>
+                <button class="menu-button button-models"><i class="icon-list"></i><span>List models</span></button>
+            </div>
+            <div class="toolbar-content toolbar2">
+                <button class="menu-button button-debugger" title="Open debugger"><i class="icon-bug"></i></button>
+            </div>
+        </div>
+        <div class="pane-header">Source Sample</div>
+        <textarea id="sourceText" class="plain-input"></textarea>
+        <div class="pane-header">Translated Output</div>
+        <textarea id="translatedText" class="plain-input output" readonly></textarea>
+        <div class="pane-header">Log</div>
+        <textarea id="logText" class="plain-input output" readonly></textarea>
+    </div>
+</body>
+</html>

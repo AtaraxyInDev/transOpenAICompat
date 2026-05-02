@@ -782,7 +782,7 @@ const thisEngine = new TranslatorEngine({
                             custom: "Custom"
                         },
                         onChange: function(evt) {
-                            thisEngine.applyProviderPreset($(evt.target).val());
+                            thisEngine.applyProviderPreset($(evt.target).val(), evt.target);
                         }
                     },
                     {
@@ -1390,26 +1390,32 @@ thisEngine.invalidateProjectCache = function() {
     this.projectFingerprint = "";
 };
 
-thisEngine.syncFormValue = function(fieldName, value) {
-    try {
-        // Robust selector to find the field even if it has a prefix like transOpenAICompat[fieldName]
-        const $fields = $(`[name="${fieldName}"], [name$="[${fieldName}]"], #${fieldName}, [id*="${fieldName}"]`);
-        if (!$fields.length) return;
-        
-        $fields.each(function() {
-            const $field = $(this);
-            if ($field.is(":checkbox")) {
-                $field.prop("checked", Boolean(value));
-            } else {
-                $field.val(value);
+thisEngine.syncFormValue = function(fieldName, value, anchor) {
+    const self = this;
+    setTimeout(() => {
+        try {
+            // Robust scoped search
+            const $scope = anchor ? $(anchor).closest(".ui-dialog, form, .options-form, body") : $("body");
+            const selector = `[name$="[${fieldName}]"], [name="${fieldName}"], #${fieldName}, [id*="${fieldName}"]`;
+            let $fields = $scope.find(selector);
+            
+            if (!$fields.length && anchor) $fields = $(selector);
+            if (!$fields.length) {
+                $fields = $scope.find("input, select, textarea").filter(function() {
+                    const name = $(this).attr("name") || "";
+                    const id = $(this).attr("id") || "";
+                    return name.toLowerCase().includes(fieldName.toLowerCase()) || 
+                           id.toLowerCase().includes(fieldName.toLowerCase());
+                });
             }
-            // Trigger change so Translator++ and other listeners react
-            $field.trigger("change");
-            $field.triggerHandler("change");
-        });
-    } catch (error) {
-        console.warn("Unable to sync form value", fieldName, error);
-    }
+
+            $fields.each(function() {
+                $(this).val(value).trigger("change").triggerHandler("change");
+            });
+        } catch (error) {
+            console.warn("[transOpenAICompat] Sync error", fieldName, error);
+        }
+    }, 150); 
 };
 
 thisEngine.setModelChoices = function(modelIds) {
@@ -1452,7 +1458,7 @@ thisEngine.setModelChoices = function(modelIds) {
     this.syncFormValue("model", this.getOptions("model"));
 };
 
-thisEngine.applyProviderPreset = function(providerId) {
+thisEngine.applyProviderPreset = function(providerId, anchor) {
     const preset = getProviderPreset(providerId);
     this.update("provider", providerId);
     this.update("baseUrl", preset.baseURL);
@@ -1460,10 +1466,10 @@ thisEngine.applyProviderPreset = function(providerId) {
     if (!preset.needsApiKey) {
         this.update("apiKey", preset.apiKey || "");
     }
-    this.syncFormValue("provider", providerId);
-    this.syncFormValue("baseUrl", preset.baseURL);
-    this.syncFormValue("model", preset.model);
-    if (!preset.needsApiKey) this.syncFormValue("apiKey", preset.apiKey || "");
+    this.syncFormValue("provider", providerId, anchor);
+    this.syncFormValue("baseUrl", preset.baseURL, anchor);
+    this.syncFormValue("model", preset.model, anchor);
+    if (!preset.needsApiKey) this.syncFormValue("apiKey", preset.apiKey || "", anchor);
     this.invalidateClient();
 };
 

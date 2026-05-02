@@ -1392,8 +1392,10 @@ thisEngine.invalidateProjectCache = function() {
 
 thisEngine.syncFormValue = function(fieldName, value) {
     try {
-        const $fields = $(`[name="${fieldName}"]`);
+        // Robust selector to find the field even if it has a prefix like transOpenAICompat[fieldName]
+        const $fields = $(`[name="${fieldName}"], [name$="[${fieldName}]"], #${fieldName}, [id*="${fieldName}"]`);
         if (!$fields.length) return;
+        
         $fields.each(function() {
             const $field = $(this);
             if ($field.is(":checkbox")) {
@@ -1401,6 +1403,8 @@ thisEngine.syncFormValue = function(fieldName, value) {
             } else {
                 $field.val(value);
             }
+            // Trigger change so Translator++ and other listeners react
+            $field.trigger("change");
             $field.triggerHandler("change");
         });
     } catch (error) {
